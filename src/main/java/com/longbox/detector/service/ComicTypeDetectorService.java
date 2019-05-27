@@ -38,4 +38,5 @@ public class ComicTypeDetectorService {
 			e.printStackTrace();
 		}
 	}
+
 }
