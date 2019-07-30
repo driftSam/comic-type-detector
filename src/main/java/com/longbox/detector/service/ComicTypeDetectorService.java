@@ -18,27 +18,29 @@ public class ComicTypeDetectorService {
 
 	final String cbr = "application/x-cbr";
 	final String cbz = "application/x-cbz";
+	final String directExchangeName = "comic-exchange";
 
 	@Autowired
 	RabbitTemplate rabbitTemplate;
 
 	public void detect(String comicName) {
 		LOG.info(comicName);
-		Path comicFile = Paths.get(comicName);
+		Path comicPath = Paths.get(comicName);
 
 		try {
-			String contentType = Files.probeContentType(comicFile);
+			String contentType = Files.probeContentType(comicPath);
 			switch (contentType) {
 			case cbr:
 				System.out.println(cbr);
-				// rabbitTemplate.convertAndSend(exchangeName, queueName, comicPath.toString());
+				rabbitTemplate.convertAndSend(directExchangeName, "rar", comicPath.toString());
 				break;
 			case cbz:
 				System.out.println(cbz);
-				// rabbitTemplate.convertAndSend(exchangeName, queueName, comicPath.toString());
+				rabbitTemplate.convertAndSend(directExchangeName, "zip", comicPath.toString());
 				break;
 			default:
 				System.out.println(contentType);
+				rabbitTemplate.convertAndSend(directExchangeName, "other", comicPath.toString());
 				break;
 			}
 		} catch (IOException e) {

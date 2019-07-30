@@ -26,10 +26,28 @@ public class ComicTypeDetectorApplication {
 	static final String directExchangeName = "comic-exchange";
 
 	static final String queueName = "comic.found";
+	static final String rarQueueName = "comic.rar";
+	static final String zipQueueName = "comic.zip";
+	static final String otherQueueName = "comic.other";
 
 	@Bean
 	Queue queue() {
 		return new Queue(queueName, false);
+	}
+
+	@Bean
+	Queue rarQueue() {
+		return new Queue(rarQueueName, false);
+	}
+
+	@Bean
+	Queue zipQueue() {
+		return new Queue(zipQueueName, false);
+	}
+
+	@Bean
+	Queue otherQueue() {
+		return new Queue(otherQueueName, false);
 	}
 
 	@Bean
@@ -39,7 +57,22 @@ public class ComicTypeDetectorApplication {
 
 	@Bean
 	Binding binding(Queue queue, DirectExchange exchange) {
-		return BindingBuilder.bind(queue).to(exchange).with("comic.found");
+		return BindingBuilder.bind(queue).to(exchange).with("found");
+	}
+
+	@Bean
+	Binding rarBinding(Queue rarQueue, DirectExchange exchange) {
+		return BindingBuilder.bind(rarQueue).to(exchange).with("rar");
+	}
+
+	@Bean
+	Binding zipBinding(Queue zipQueue, DirectExchange exchange) {
+		return BindingBuilder.bind(zipQueue).to(exchange).with("zip");
+	}
+
+	@Bean
+	Binding otherBinding(Queue otherQueue, DirectExchange exchange) {
+		return BindingBuilder.bind(otherQueue).to(exchange).with("other");
 	}
 
 	@Bean
